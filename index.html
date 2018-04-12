@@ -31,7 +31,14 @@ Input:
 </ol>
 
 <strong>BPM</strong>: <span id="bpm">??</span><br><br>
-Average elapsed time: <span id="avg">??</span>
+Average elapsed time: <span id="avg">??</span><br>
+
+<br>
+<details>
+	<summary>For devices with no keyboard</summary>
+	<input type="button" id="beat-btn" value="Add beat"><br><br>
+	<input type="button" id="reset-beats-btn" value="Reset">
+</details>
 
 <script>
 	var registered_beats = 0;     // 0-8 beats
@@ -74,48 +81,59 @@ Average elapsed time: <span id="avg">??</span>
 		else        { document.getElementById("bpm").innerHTML = "??";                                          }
 	}
 
+	var attemptToRegisterNewBeat = function() {
+		// Register the current beat timestamp if it doesn't exceed the beats limit
+		if(registered_beats < 8) { beats[++registered_beats] = Date.now(); }
+		else                     { return; }
+
+		// Register the elapsed time since the last beat if it's possible
+		if(registered_beats > 1) {
+			beats_elapsed_times[registered_beats] = beats[registered_beats] - beats[registered_beats-1];
+		}
+
+		// Calculate the current BPM if it's possible
+		if(registered_beats > 1) {
+			// Calculate the average elapsed time between beats, in ms
+			var sum = beats[registered_beats] - beats[1];
+			average_elapsed_time = sum/(registered_beats-1);
+
+			// Convert it to seconds
+			var avg_in_s = average_elapsed_time/1000;
+
+			// Rule of three to discover the bpm (beats in 60 seconds)
+			/*
+			# beats            | timespan
+			#------------------|-----------------------------
+			# registered_beats | avg_in_s * registered_beats
+			#       bpm        | 60 s
+			#
+			*/
+			bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
+		}
+
+		// Render the results
+		render();
+	}
+
+	var resetBeats = function() {
+		resetValues();
+		render();
+	}
+
 	var keypressHandler = function(e) {
 		if(e.code == "KeyX") {
-			// Register the current beat timestamp if it doesn't exceed the beats limit
-			if(registered_beats < 8) { beats[++registered_beats] = Date.now(); }
-			else                     { return; }
-
-			// Register the elapsed time since the last beat if it's possible
-			if(registered_beats > 1) {
-				beats_elapsed_times[registered_beats] = beats[registered_beats] - beats[registered_beats-1];
-			}
-
-			// Calculate the current BPM if it's possible
-			if(registered_beats > 1) {
-				// Calculate the average elapsed time between beats, in ms
-				var sum = beats[registered_beats] - beats[1];
-				average_elapsed_time = sum/(registered_beats-1);
-
-				// Convert it to seconds
-				var avg_in_s = average_elapsed_time/1000;
-
-				// Rule of three to discover the bpm (beats in 60 seconds)
-				/*
-				# beats            | timespan
-				#------------------|-----------------------------
-				# registered_beats | avg_in_s * registered_beats
-				#       bpm        | 60 s
-				#
-				*/
-				bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
-			}
-
-			// Render the results
-			render();
+			attemptToRegisterNewBeat();
 		}
 
 		if(e.code == "KeyR") {
-			resetValues();
-			render();
+			resetBeats();
 		}
 	}
 
 	window.addEventListener("keypress", keypressHandler, false);
+
+	document.getElementById("beat-btn").addEventListener("click", attemptToRegisterNewBeat, false);
+	document.getElementById("reset-beats-btn").addEventListener("click", resetBeats, false);
 </script>
 </body>
 </html>
