@@ -5,6 +5,19 @@
 <title>bpmizador</title>
 <style>
     noscript { color: red; }
+    #beat-btn, #reset-beats-btn {
+        display: block;
+        width: 100%;
+        height: 2em;
+        margin-bottom: 0.5em;
+    }
+    html { background-color: white; }
+    body {
+        max-width: 800px;
+        margin: 0 auto 0 auto;
+        padding: 10px;
+        background-color: #efefef;
+    }
 </style>
 </head>
 <body>
@@ -12,12 +25,20 @@
 
 <noscript><strong>You need to enable JavaScript for bpmizador to work</strong></noscript>
 
-Instructions:
-<ol>
-    <li>Press <kbd>X</kbd> on every beat to calculate the bpm</li>
-    <li>Take note of the resulting bpm</li>
-    <li>Press <kbd>R</kbd> to clear the current value and start all over</li>
-</ol>
+<details>
+    <summary>Instructions</summary>
+    <ol>
+        <li>Press <kbd>X</kbd> or tap <input type="button" value="Add beat" disabled> on every beat to calculate the bpm</li>
+        <li>Take note of the resulting bpm</li>
+        <li>Press <kbd>R</kbd> or tap <input type="button" value="Reset" disabled> to clear the current values and start all over</li>
+        <li>Optionally, press <kbd>H</kbd> if you wish to <b>h</b>ide the <input type="button" value="Add beat" disabled> and <input type="button" value="Reset" disabled> buttons</li>
+    </ol>
+</details><br>
+
+<div id="buttons">
+    <input type="button" id="beat-btn" value="Add beat">
+    <input type="button" id="reset-beats-btn" value="Reset">
+</div>
 
 Input:
 <ol>
@@ -32,14 +53,7 @@ Input:
 </ol>
 
 <strong>BPM</strong>: <span id="bpm">??</span><br><br>
-Average elapsed time: <span id="avg">??</span><br>
-
-<br>
-<details>
-    <summary>For devices with no keyboard</summary>
-    <input type="button" id="beat-btn" value="Add beat"><br><br>
-    <input type="button" id="reset-beats-btn" value="Reset">
-</details>
+Average elapsed time: <span id="avg">??</span>
 
 <script>
     var registered_beats = 0;     // 0-8 beats
@@ -128,6 +142,15 @@ Average elapsed time: <span id="avg">??</span><br>
 
         if(e.code == "KeyR") {
             resetBeats();
+        }
+
+        if(e.code == "KeyH") {
+            buttonsDiv = document.getElementById("buttons");
+            if(window.getComputedStyle(buttonsDiv).display == "none") {
+                buttonsDiv.style.display = "block";
+            } else {
+                buttonsDiv.style.display = "none";
+            }
         }
     }
 
