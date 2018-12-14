@@ -1,164 +1,164 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>bpmizador</title>
-	<style>
-		noscript { color: red; }
-		#beat-btn, #reset-beats-btn {
-			display: block;
-			width: 100%;
-			height: 2em;
-			margin-bottom: 0.5em;
-		}
-		html { background-color: white; }
-		body {
-			max-width: 800px;
-			margin: 0 auto 0 auto;
-			padding: 10px;
-			background-color: #efefef;
-		}
-		h1 { margin: 0; padding: 0; }
-	</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>bpmizador</title>
+    <style>
+        noscript { color: red; }
+        #beat-btn, #reset-beats-btn {
+            display: block;
+            width: 100%;
+            height: 2em;
+            margin-bottom: 0.5em;
+        }
+        html { background-color: white; }
+        body {
+            max-width: 800px;
+            margin: 0 auto 0 auto;
+            padding: 10px;
+            background-color: #efefef;
+        }
+        h1 { margin: 0; padding: 0; }
+    </style>
 </head>
 <body>
-	<h1>bpmizador</h1><hr>
+    <h1>bpmizador</h1><hr>
 
-	<noscript><strong>You need to enable JavaScript for bpmizador to work</strong></noscript>
+    <noscript><strong>You need to enable JavaScript for bpmizador to work</strong></noscript>
 
-	<details>
-		<summary>Instructions</summary>
-		<ol>
-			<li>Press <kbd>X</kbd> or tap <input type="button" value="Add beat" disabled> on every beat to calculate the bpm</li>
-			<li>Take note of the resulting bpm</li>
-			<li>Press <kbd>R</kbd> or tap <input type="button" value="Reset" disabled> to clear the current values and start all over</li>
-			<li>Optionally, press <kbd>H</kbd> if you wish to <b>h</b>ide the <input type="button" value="Add beat" disabled> and <input type="button" value="Reset" disabled> buttons</li>
-		</ol>
-	</details><br>
+    <details>
+        <summary>Instructions</summary>
+        <ol>
+            <li>Press <kbd>X</kbd> or tap <input type="button" value="Add beat" disabled> on every beat to calculate the bpm</li>
+            <li>Take note of the resulting bpm</li>
+            <li>Press <kbd>R</kbd> or tap <input type="button" value="Reset" disabled> to clear the current values and start all over</li>
+            <li>Optionally, press <kbd>H</kbd> if you wish to <b>h</b>ide the <input type="button" value="Add beat" disabled> and <input type="button" value="Reset" disabled> buttons</li>
+        </ol>
+    </details><br>
 
-	<div id="buttons">
-		<input type="button" id="beat-btn" value="Add beat">
-		<input type="button" id="reset-beats-btn" value="Reset">
-	</div>
+    <div id="buttons">
+        <input type="button" id="beat-btn" value="Add beat">
+        <input type="button" id="reset-beats-btn" value="Reset">
+    </div>
 
-	Input:
-	<ol>
-		<li id="1"></li>
-		<li id="2"></li>
-		<li id="3"></li>
-		<li id="4"></li>
-		<li id="5"></li>
-		<li id="6"></li>
-		<li id="7"></li>
-		<li id="8"></li>
-	</ol>
+    Input:
+    <ol>
+        <li id="1"></li>
+        <li id="2"></li>
+        <li id="3"></li>
+        <li id="4"></li>
+        <li id="5"></li>
+        <li id="6"></li>
+        <li id="7"></li>
+        <li id="8"></li>
+    </ol>
 
-	<strong>BPM</strong>: <span id="bpm">??</span><br><br>
-	Average elapsed time: <span id="avg">??</span>
+    <strong>BPM</strong>: <span id="bpm">??</span><br><br>
+    Average elapsed time: <span id="avg">??</span>
 
-	<script>
-		var registered_beats = 0;     // 0-8 beats
-		var beats = [];               // 1-8, in miliseconds
-		var beats_elapsed_times = []; // 2-8, in miliseconds
-		var average_elapsed_time = 0; // Average elapsed time between beats, in miliseconds
-		var bpm = -1;                 // -1 means "not calculated yet"
+    <script>
+        var registered_beats = 0;     // 0-8 beats
+        var beats = [];               // 1-8, in miliseconds
+        var beats_elapsed_times = []; // 2-8, in miliseconds
+        var average_elapsed_time = 0; // Average elapsed time between beats, in miliseconds
+        var bpm = -1;                 // -1 means "not calculated yet"
 
-		var resetValues = function() {
-			registered_beats = 0;
-			beats = [];
-			beats_elapsed_times = [];
-			average_elapsed_time = 0;
-			bpm = -1;
-		}
+        var resetValues = function() {
+            registered_beats = 0;
+            beats = [];
+            beats_elapsed_times = [];
+            average_elapsed_time = 0;
+            bpm = -1;
+        }
 
-		var render = function() {
-			// Render beats
-			if(registered_beats > 0) {
-				for(var i=1; i<=registered_beats; i++) {
-					document.getElementById(i).innerHTML = beats[i] + "ms";
+        var render = function() {
+            // Render beats
+            if(registered_beats > 0) {
+                for(var i=1; i<=registered_beats; i++) {
+                    document.getElementById(i).innerHTML = beats[i] + "ms";
 
-					// If the beat has an elapsed time since its previous, display it
-					if(i>1) {
-						document.getElementById(i).innerHTML += " (+"  + beats_elapsed_times[i]  + "ms)";
-					}
-				}
-			} else {
-				for(var i=1; i<=8; i++) {
-					document.getElementById(i).innerHTML = "";
-				}
-			}
+                    // If the beat has an elapsed time since its previous, display it
+                    if(i>1) {
+                        document.getElementById(i).innerHTML += " (+"  + beats_elapsed_times[i]  + "ms)";
+                    }
+                }
+            } else {
+                for(var i=1; i<=8; i++) {
+                    document.getElementById(i).innerHTML = "";
+                }
+            }
 
-			// Render the average elapsed time
-			if(registered_beats > 1) { document.getElementById("avg").innerHTML = Math.trunc(average_elapsed_time) + "ms"; }
-			else                     { document.getElementById("avg").innerHTML = "??";                                    }
+            // Render the average elapsed time
+            if(registered_beats > 1) { document.getElementById("avg").innerHTML = Math.trunc(average_elapsed_time) + "ms"; }
+            else                     { document.getElementById("avg").innerHTML = "??";                                    }
 
-			// Render BPM
-			if(bpm > 0) { document.getElementById("bpm").innerHTML = Math.trunc(bpm) + " (" + bpm.toFixed(2) + ")"; }
-			else        { document.getElementById("bpm").innerHTML = "??";                                          }
-		}
+            // Render BPM
+            if(bpm > 0) { document.getElementById("bpm").innerHTML = Math.trunc(bpm) + " (" + bpm.toFixed(2) + ")"; }
+            else        { document.getElementById("bpm").innerHTML = "??";                                          }
+        }
 
-		var attemptToRegisterNewBeat = function() {
-			// Register the current beat timestamp if it doesn't exceed the beats limit
-			if(registered_beats < 8) { beats[++registered_beats] = Date.now(); }
-			else                     { return; }
+        var attemptToRegisterNewBeat = function() {
+            // Register the current beat timestamp if it doesn't exceed the beats limit
+            if(registered_beats < 8) { beats[++registered_beats] = Date.now(); }
+            else                     { return; }
 
-			// Register the elapsed time since the last beat if it's possible
-			if(registered_beats > 1) {
-				beats_elapsed_times[registered_beats] = beats[registered_beats] - beats[registered_beats-1];
-			}
+            // Register the elapsed time since the last beat if it's possible
+            if(registered_beats > 1) {
+                beats_elapsed_times[registered_beats] = beats[registered_beats] - beats[registered_beats-1];
+            }
 
-			// Calculate the current BPM if it's possible
-			if(registered_beats > 1) {
-				// Calculate the average elapsed time between beats, in ms
-				var sum = beats[registered_beats] - beats[1];
-				average_elapsed_time = sum/(registered_beats-1);
+            // Calculate the current BPM if it's possible
+            if(registered_beats > 1) {
+                // Calculate the average elapsed time between beats, in ms
+                var sum = beats[registered_beats] - beats[1];
+                average_elapsed_time = sum/(registered_beats-1);
 
-				// Convert it to seconds
-				var avg_in_s = average_elapsed_time/1000;
+                // Convert it to seconds
+                var avg_in_s = average_elapsed_time/1000;
 
-				// Rule of three to discover the bpm (beats in 60 seconds)
-				/*
-				# beats            | timespan
-				#------------------|-----------------------------
-				# registered_beats | avg_in_s * registered_beats
-				#       bpm        | 60 s
-				#
-				*/
-				bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
-			}
+                // Rule of three to discover the bpm (beats in 60 seconds)
+                /*
+                # beats            | timespan
+                #------------------|-----------------------------
+                # registered_beats | avg_in_s * registered_beats
+                #       bpm        | 60 s
+                #
+                */
+                bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
+            }
 
-			// Render the results
-			render();
-		}
+            // Render the results
+            render();
+        }
 
-		var resetBeats = function() {
-			resetValues();
-			render();
-		}
+        var resetBeats = function() {
+            resetValues();
+            render();
+        }
 
-		var keypressHandler = function(e) {
-			if(e.code == "KeyX") {
-				attemptToRegisterNewBeat();
-			}
+        var keypressHandler = function(e) {
+            if(e.code == "KeyX") {
+                attemptToRegisterNewBeat();
+            }
 
-			if(e.code == "KeyR") {
-				resetBeats();
-			}
+            if(e.code == "KeyR") {
+                resetBeats();
+            }
 
-			if(e.code == "KeyH") {
-				buttonsDiv = document.getElementById("buttons");
-				if(window.getComputedStyle(buttonsDiv).display == "none") {
-					buttonsDiv.style.display = "block";
-				} else {
-					buttonsDiv.style.display = "none";
-				}
-			}
-		}
+            if(e.code == "KeyH") {
+                buttonsDiv = document.getElementById("buttons");
+                if(window.getComputedStyle(buttonsDiv).display == "none") {
+                    buttonsDiv.style.display = "block";
+                } else {
+                    buttonsDiv.style.display = "none";
+                }
+            }
+        }
 
-		window.addEventListener("keypress", keypressHandler, false);
+        window.addEventListener("keypress", keypressHandler, false);
 
-		document.getElementById("beat-btn").addEventListener("click", attemptToRegisterNewBeat, false);
-		document.getElementById("reset-beats-btn").addEventListener("click", resetBeats, false);
-	</script>
+        document.getElementById("beat-btn").addEventListener("click", attemptToRegisterNewBeat, false);
+        document.getElementById("reset-beats-btn").addEventListener("click", resetBeats, false);
+    </script>
 </body>
 </html>
