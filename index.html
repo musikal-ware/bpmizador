@@ -124,7 +124,8 @@
                 #       bpm        | 60 s
                 #
                 */
-                bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
+                //bpm = (registered_beats * 60)/(avg_in_s*registered_beats);
+                bpm = 60/avg_in_s;
             }
 
             // Render the results
